@@ -1,0 +1,38 @@
+name: Deploy bot function
+
+on:
+  push:
+    branches:
+      - "main"
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - name: Set outputs
+      id: vars
+      run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          
+    - name: YC Function deploy
+      uses: yc-actions/yc-sls-function@v2.3.0
+      with:
+        # Json containing authorized key for Service Account. More info https://cloud.yandex.ru/docs/container-registry/operations/authentication#sa-json
+        yc-sa-json-credentials: ${{ secrets.YANDEX_CLOUD_SA_KEY }}
+        folder-id: b1gcjqtrtr3v1avh5ffo
+        function-name: 'echo-tg-bot'
+        runtime: 'nodejs16'
+        memory: '128Mb'
+        entrypoint: 'src/main.handler'
+        environment: | 
+          COMMIT_HASH=${{ steps.vars.outputs.sha_short }}
+          BOT_TOKEN=${{ secrets.BOT_TOKEN }}
+        include: | 
+          src
+          package.json
+        exclude: | 
+          **/*.ts
+        

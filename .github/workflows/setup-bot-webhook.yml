@@ -1,0 +1,19 @@
+name: Setup Webhook
+run-name: Setup Webhook ${{inputs.url}}
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Telegram Webhook URL' 
+        required: true
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+    - name: curl
+      uses: wei/curl@master
+      with:
+        args: 'https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/setWebhook?url=${{inputs.url}}'
+    

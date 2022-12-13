@@ -1,0 +1,8 @@
+
+### Долбануть функцию
+GET https://functions.yandexcloud.net/***
+
+###  Застетапть вебхук
+GET https://api.telegram.org/botTOKEN_HERE/setWebhook?url=URL_HERE
+
+
